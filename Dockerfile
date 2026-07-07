@@ -1,16 +1,17 @@
+# 1. Select the base image
 FROM python:3.11-slim
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
-
+# 2. Set the working directory inside the container
 WORKDIR /app
 
-COPY requirement.txt ./
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirement.txt
+# 3. Copy only the requirements first (to leverage Docker cache)
+COPY requirements.txt .
 
+# 4. Install the dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 5. Copy the rest of your application code
 COPY . .
 
-EXPOSE 8080
-
-CMD ["python", "main.py"]
+# 6. Define the startup command
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8080}"]
