@@ -11,6 +11,23 @@ def home():
 def health():
     return {'status':'ok'}
 
+@app.get('/greet')
+def greet(name: str = 'Guest'):
+    """
+    General greeting function for agents.
+    
+    Args:
+        name: The name of the person to greet (default: 'Guest')
+    
+    Returns:
+        A greeting message
+    """
+    return {
+        'message': f'Hello, {name}!',
+        'name': name,
+        'status': 'success'
+    }
+
 if __name__=='__main__':
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=int(os.environ.get("PORT", 8080)), reload=True)
